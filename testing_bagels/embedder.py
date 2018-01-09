@@ -2,7 +2,7 @@ import numpy as np
 from numpy import linalg as ln
 
 def biggest_eigenvalue(m1):
-    return(calculate_eigenvalues(m1)[0])
+    return(abs(calculate_eigenvalues(m1)[0]))
 
 def calculate_average_degree(m1):
     degrees = []
@@ -25,26 +25,19 @@ def calculate_biggest_eigengap(m1):
         gap = eigs[i+1] - eigs[i]
         if gap > maximum:
             maximum = gap
-
-    return(maximum)
+    return(abs(maximum))
 
 def calculate_eigenvalues(m1):
     eigenvalues = ln.eig(m1)[0]
     return(eigenvalues)
 
 def smallest_eigenvalue(m1):
-    return(min(calculate_eigenvalues(m1)))
+    return(abs(min(calculate_eigenvalues(m1))))
 
 def sum_eigenvalues(m1):
-    return(sum(calculate_eigenvalues(m1)))
+    return(abs(sum(calculate_eigenvalues(m1))))
 
 def embed(m1):
-    vec = [calculate_average_degree(m1), calculate_average_distances(m1),
-     sum_eigenvalues(m1), biggest_eigenvalue(m1), smallest_eigenvalue(m1),
-     calculate_biggest_eigengap(m1)]
+    vec = [calculate_average_distances(m1),
+     calculate_biggest_eigengap(m1), sum_eigenvalues(m1)]
     return(vec)
-
-
-A = np.matrix("1 1 0 0; 1 1 1 0; 0 1 1 1; 0 0 1 1")
-
-print(embed(A))
