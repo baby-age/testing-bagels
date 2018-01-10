@@ -17,8 +17,8 @@ def visualise(m, y):
 
     plt.show()
 
-train_data = gen.generate_graphs(300, 30, 100)
-test_data = gen.generate_graphs(100, 30, 100)
+train_data = gen.generate_graphs(300, 30, 90)
+test_data = gen.generate_graphs(100, 30, 90)
 
 new_train_data = []
 new_test_data = []
