@@ -6,18 +6,19 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
 
-def visualise(x1, x2, x3, y):
+def visualise(m, y):
     fig = plt.figure()
     ax = Axes3D(fig)
 
-    ax.scatter(x1, x2, x3, c = train_data['y'])
+    ax.scatter(m[:,0],m[:,1],m[:,2], c = train_data['y'])
     ax.set_xlabel('Ave. dist.')
     ax.set_ylabel('Max. eig.gap')
     ax.set_zlabel('sum eig.val')
+
     plt.show()
 
-train_data = gen.generate_graphs(300, 4, 100)
-test_data = gen.generate_graphs(100, 4, 100)
+train_data = gen.generate_graphs(300, 30, 100)
+test_data = gen.generate_graphs(100, 30, 100)
 
 new_train_data = []
 new_test_data = []
@@ -36,4 +37,4 @@ pred = clf.predict(new_test_data)
 
 print("Average error: ", sum(pred-test_data['y'])/len(test_data))
 
-#visualise(new_train_data, train_data['y'])
+visualise(np.matrix(new_train_data), train_data['y'])
