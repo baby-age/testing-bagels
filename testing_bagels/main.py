@@ -13,7 +13,7 @@ def visualise(m, y):
     ax.scatter(m[:,0],m[:,1],m[:,2], c = train_data['y'])
     ax.set_xlabel('Ave. dist.')
     ax.set_ylabel('Max. eig.gap')
-    ax.set_zlabel('Ave. eig')
+    ax.set_zlabel('Alg. connectivity')
 
     plt.show()
 
