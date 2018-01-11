@@ -2,6 +2,11 @@ import numpy as np
 import graphgen
 from numpy import linalg as ln
 
+def algebraic_connectivity(m1):
+    laplacian = calculate_laplacian_matrix(m1)
+    eigenvalues = calculate_eigenvalues(m1)
+    print(sorted(eigenvalues))
+
 def biggest_eigenvalue(m1):
     return(abs(calculate_eigenvalues(m1)[0]))
 
@@ -29,8 +34,8 @@ def calculate_biggest_eigengap(m1):
     return(maximum)
 
 def calculate_eigenvalues(m1):
-    eigenvalues = ln.eig(m1)[0]
-    return(eigenvalues)
+    eigenmodes = ln.eig(m1)
+    return(eigenmodes[0])
 
 
 def eigenmode_volume(m1):
@@ -55,14 +60,14 @@ def calculate_weighted_degree_matrix(m1):
     w_degree_matrix = [[sum(x) for x in m1[y]] for y in range(dim)]
     return(w_degree_matrix)
 
-def is_zero(x):
+def if_zero(x):
     if x == 0:
         return 0
     else:
         return 1
 
 def calculate_adjacency_matrix(m1):
-    adj_m = np.matrix([[is_zero(x) for x in m1[y]] for y in range(len(m1))])
+    adj_m = np.matrix([[if_zero(x) for x in m1[y]] for y in range(len(m1))])
     return(adj_m)
 
 def calculate_laplacian_matrix(m1):
@@ -73,13 +78,35 @@ def calculate_laplacian_matrix(m1):
 
     return(lap_mat)
 
+
+def normalised_laplacian_matrix(m1):
+    d = calculate_degree_matrix(m1)
+    lap_mat = calculate_laplacian_matrix(m1)
+
+    d_minus = np.sqrt(ln.inv(d))
+    normalised_lap_mat = np.dot(d_minus, np.dot(lap_mat, d_minus))
+    return(normalised_lap_mat)
+
 def smallest_eigenvalue(m1):
     return(abs(min(calculate_eigenvalues(m1))))
 
-def sum_eigenvalues(m1):
-    return(abs(sum(calculate_eigenvalues(m1))))
+def average_eigenvalue(m1):
+    return(np.mean(calculate_eigenvalues(m1)))
 
 def embed(m1):
     vec = [calculate_average_distances(m1),
-     calculate_biggest_eigengap(m1), sum_eigenvalues(m1)]
+     calculate_biggest_eigengap(m1), abs(average_eigenvalue(m1))]
     return(vec)
+
+graph = [[0, 1, 0, 0, 1, 0],
+ [1, 0, 1, 0, 1, 0],
+ [0, 1, 0, 1, 0, 0],
+ [0, 0, 1, 0, 1, 1],
+ [1, 1, 0, 1, 0, 0],
+ [0, 0, 0, 1, 0, 0]]
+#graph, a = graphgen.generate_graph_with_age(5, 0.4, 2, 12)
+
+laplacian = calculate_laplacian_matrix(graph)
+
+print(ln.eig(laplacian)[0])
+calculate_eigenvalues(laplacian)
