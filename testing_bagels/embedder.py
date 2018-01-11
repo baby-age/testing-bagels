@@ -4,8 +4,8 @@ from numpy import linalg as ln
 
 def algebraic_connectivity(m1):
     laplacian = calculate_laplacian_matrix(m1)
-    eigenvalues = calculate_eigenvalues(m1)
-    print(sorted(eigenvalues))
+    eigenvalues = ln.eig(laplacian)[0]
+    return(sorted(eigenvalues)[1])
 
 def biggest_eigenvalue(m1):
     return(abs(calculate_eigenvalues(m1)[0]))
@@ -95,18 +95,5 @@ def average_eigenvalue(m1):
 
 def embed(m1):
     vec = [calculate_average_distances(m1),
-     calculate_biggest_eigengap(m1), abs(average_eigenvalue(m1))]
+     calculate_biggest_eigengap(m1), abs(algebraic_connectivity(m1))]
     return(vec)
-
-graph = [[0, 1, 0, 0, 1, 0],
- [1, 0, 1, 0, 1, 0],
- [0, 1, 0, 1, 0, 0],
- [0, 0, 1, 0, 1, 1],
- [1, 1, 0, 1, 0, 0],
- [0, 0, 0, 1, 0, 0]]
-#graph, a = graphgen.generate_graph_with_age(5, 0.4, 2, 12)
-
-laplacian = calculate_laplacian_matrix(graph)
-
-print(ln.eig(laplacian)[0])
-calculate_eigenvalues(laplacian)
