@@ -10,16 +10,19 @@ num_layers = len(dimension_signature)
 e = 0.1
 regularity = 0.1
 
+def backpropagate(weights, affines, error):
+    return(weights, affines)
 
 def train_model(data, labels, num_iterations):
-    model = {}
-    weights = []
-    affine_addition = []
+    model = {'weights':[], 'affines':[]}
+
+    weights = model['weights']
+    affines = model['affines']
 
     for i in range(1, num_layers):
         weights.append(np.random.randn(dimension_signature[i-1],
           dimension_signature[i]) / np.sqrt(dimension_signature[i-1]))
-        affine_addition.append(np.zeros((1, dimension_signature[i])))
+        affines.append(np.zeros((1, dimension_signature[i])))
 
 
     for i in range(num_iterations):
@@ -29,19 +32,24 @@ def train_model(data, labels, num_iterations):
 
         for i in range(num_layers-1):
             to_append = np.dot(z_out[i], weights[i])
-            to_append = to_append + affine_addition[i]
+            to_append = to_append + affines[i]
             z_in.append(to_append)
             z_out.append(np.tanh(to_append))
 
-
-
         fin = z_in[num_layers-2]
-        scores = np.exp(fin) + 0.0001
+        scores = np.exp(fin)
+        scores = scores[:,0]
 
-        probs = scores / np.sum(scores, axis=1, keepdims=True)
+        labels = np.asarray([item for sublist in labels for item in sublist])
 
-        model = {'weight_1': weights[0], 'affine_1': affine_addition[0],
-            'weight_2': weights[1], 'affine_2': affine_addition[1]}
+        error = 0.5 * np.power(scores - labels, 2)
+
+        print(error)
+
+        #TODO Backpropagation part.
+        weights, affines = backpropagate(weights, affines, error)
+
+        model = {'weights': weights, 'affines': affines}
 
     return model
 
@@ -66,5 +74,4 @@ for i in test_data['X']:
 for i in test_data['y']:
     new_test_labels.append([i])
 
-model = train_model(new_train_data, new_train_labels, 1000)
-print(model['weight_1'])
+model = train_model(new_train_data, new_train_labels, 1)
