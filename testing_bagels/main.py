@@ -13,12 +13,12 @@ def visualise(m, y):
     ax.scatter(m[:,0],m[:,1],m[:,2], c = train_data['y'])
     ax.set_xlabel('Ave. dist.')
     ax.set_ylabel('Max. eig.gap')
-    ax.set_zlabel('sum eig.val')
+    ax.set_zlabel('Ave. eig')
 
     plt.show()
 
-train_data = gen.generate_graphs(300, 30, 90)
-test_data = gen.generate_graphs(100, 30, 90)
+train_data = gen.generate_graphs(300, 60, 100)
+test_data = gen.generate_graphs(100, 60, 100)
 
 new_train_data = []
 new_test_data = []
