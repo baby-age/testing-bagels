@@ -4,56 +4,83 @@ from numpy import dot
 import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
 
-dimension_signature = [3, 3, 1]
-num_layers = len(dimension_signature)
-
 eps = 0.1
 regularity = 0.1
 
-def backpropagate(weights, biases, error):
+def tanh(x):
+    return((np.exp(x) - np.exp(-x))/(np.exp(-x) + np.exp(x)))
 
-    return(weights, biases)
+def d_tanh(x):
+    return(4/np.power(np.exp(-x) + np.exp(x), 2))
+
+class NN():
+    def __init__(self, signature):
+        self.dimension_signature = signature
+        self.num_layers = len(signature)
+
+        self.weights = self.initialise_weights()
+        self.biases = self.initialise_biases()
+
+        print(self.biases)
+
+    def initialise_weights(self):
+        weights = []
+        for i in range(1, self.num_layers):
+            dim_minus = self.dimension_signature[i-1]
+            dim = self.dimension_signature[i]
+
+            weights.append(np.random.randn(dim_minus,
+                dim) / np.sqrt(dim_minus))
+        return(weights)
+
+    def initialise_biases(self):
+        biases = []
+        for i in range(1, self.num_layers):
+            dim = self.dimension_signature[i]
+            biases.append(np.zeros((1, dim)))
+        return(biases)
+
+
+    def backpropagate(self, X, labels, predicted):
+
+        diff = predicted - labels
+
+        self.error = 0.5 * np.power(diff, 2)
+        self.delta = self.error * d_tanh(predicted)
+
+        db2 = np.sum(self.delta, axis=0, keepdims=True)
+
+
+        hid_error = np.dot(self.delta, np.transpose(self.weights[1]))
+        hid_delta = hid_error*d_tanh(self.outputs[0])
+
+        db1 = np.sum(hid_delta, axis=0)
+
+        dW1 = np.dot(np.transpose(X), hid_delta)
+        dW2 = np.dot(np.transpose(self.outputs[0]), self.delta)
+
+        dW1 += regularity * self.weights[0]
+        dW2 += regularity * self.weights[1]
+
+        self.weights[0] += -eps * dW1
+        self.biases[0] += -eps * db1
+        self.weights[1] += -eps * dW2
+        self.biases[1] += -eps * db2
 
 
 
-def train_model(data, labels, num_iterations):
-    #Initialising the model with empty weights and bias vectors.
-    model = {'weights':[], 'bias':[]}
-
-    weights = model['weights']
-    biases = model['bias']
-
-    #Random initial values for weight matrices.
-    for i in range(1, num_layers):
-        weights.append(np.random.randn(dimension_signature[i-1],
-          dimension_signature[i]) / np.sqrt(dimension_signature[i-1]))
-        biases.append(np.zeros((1, dimension_signature[i])))
 
 
-    for i in range(num_iterations):
-        z = {'z_in':[], 'z_out':[]}
+    def feedforward(self, vec):
+        self.outputs = []
+        for w, b in zip(self.weights, self.biases):
+            vec = np.tanh(np.dot(vec, w) + b)
+            self.outputs.append(vec)
+        return(vec)
 
-        z['z_out'].append(data)
-
-        for i in range(num_layers-1):
-            to_append = np.dot(z['z_out'][i], weights[i])
-            to_append = to_append + biases[i]
-            z['z_in'].append(to_append)
-            z['z_out'].append(np.tanh(to_append))
-
-        fin = z['z_in'][num_layers-2]
-        scores = np.exp(fin)
-        diff = scores-labels
-        error = 0.5 * np.power(diff, 2)
-
-        print(error)
-
-        #TODO Backpropagation part.
-        weights, biases = backpropagate(weights, biases, error)
-
-        model = {'weights': weights, 'bias': biases}
-
-    return model
+    def train_network(self, X, y):
+        predicted = self.feedforward(X)
+        self.backpropagate(X, y, predicted)
 
 
 train_data = gen.generate_graphs(200, 4, 90)
@@ -76,4 +103,9 @@ for i in test_data['X']:
 for i in test_data['y']:
     new_test_labels.append([i])
 
-model = train_model(new_train_data, new_train_labels, 1)
+#model = train_model(new_train_data, new_train_labels, 2)
+
+neur = NN([3, 3, 1])
+
+for i in range(2):
+    neur.train_network(new_train_data, new_train_labels)
