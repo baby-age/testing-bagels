@@ -21,9 +21,9 @@ def generate_graphs(number, dimension, max_weight):
 	for i in range(number):
 		ran = random.uniform(0, 1)
 		if ran < 0.33:
-			age = random.uniform(10,12)
+			age = random.uniform(8,10)
 		elif ran < 0.66:
-			age = random.uniform(11,13)
+			age = random.uniform(10,12)
 		else:
 			age = random.uniform(12,14)
 
