@@ -3,15 +3,13 @@ from numpy import dot
 
 import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
+from sklearn import preprocessing
 
-eps = 0.1
-regularity = 0.1
-
-def tanh(x):
-    return((np.exp(x) - np.exp(-x))/(np.exp(-x) + np.exp(x)))
+eps = 0.001
+regularity = 0.001
 
 def d_tanh(x):
-    return(4/np.power(np.exp(-x) + np.exp(x), 2))
+    return(1-np.power(np.tanh(x),2))
 
 class NN():
     def __init__(self, signature):
@@ -20,8 +18,6 @@ class NN():
 
         self.weights = self.initialise_weights()
         self.biases = self.initialise_biases()
-
-        print(self.biases)
 
     def initialise_weights(self):
         weights = []
@@ -37,54 +33,71 @@ class NN():
         biases = []
         for i in range(1, self.num_layers):
             dim = self.dimension_signature[i]
-            biases.append(np.zeros((1, dim)))
+            bias = np.zeros((1, dim))
+            biases.append(bias)
+
         return(biases)
 
-
-    def backpropagate(self, X, labels, predicted):
-
-        diff = predicted - labels
-
-        self.error = 0.5 * np.power(diff, 2)
-        self.delta = self.error * d_tanh(predicted)
-
-        db2 = np.sum(self.delta, axis=0, keepdims=True)
-
-
-        hid_error = np.dot(self.delta, np.transpose(self.weights[1]))
-        hid_delta = hid_error*d_tanh(self.outputs[0])
-
-        db1 = np.sum(hid_delta, axis=0)
-
-        dW1 = np.dot(np.transpose(X), hid_delta)
-        dW2 = np.dot(np.transpose(self.outputs[0]), self.delta)
-
-        dW1 += regularity * self.weights[0]
-        dW2 += regularity * self.weights[1]
-
-        self.weights[0] += -eps * dW1
-        self.biases[0] += -eps * db1
-        self.weights[1] += -eps * dW2
-        self.biases[1] += -eps * db2
-
-
-
-
-
     def feedforward(self, vec):
-        self.outputs = []
+        self.outputs = [vec]
         for w, b in zip(self.weights, self.biases):
             vec = np.tanh(np.dot(vec, w) + b)
             self.outputs.append(vec)
         return(vec)
+
+    def predict(self, vec):
+        self.outputs = []
+        for w, b in zip(self.weights[0:-1], self.biases[0:-1]):
+            vec = np.tanh(np.dot(vec, w) + b)
+            self.outputs.append(vec)
+
+        vec = np.dot(vec, self.weights[-1]) + self.biases[-1]
+        self.outputs.append(vec)
+        return(vec)
+
+    def backpropagate(self, X, y, predicted):
+        self.error = 0.5*np.power(predicted-y, 1)
+        self.delta = self.error * d_tanh(self.outputs[self.num_layers-1])
+
+        deltas = {}
+        deltas[self.num_layers-1] = self.delta
+
+        delta = self.delta
+        for i in range(self.num_layers-2, 0, -1):
+            hid_error = np.dot(delta, np.transpose(self.weights[i]))
+            delta = hid_error * d_tanh(self.outputs[i])
+            deltas[i] = delta
+
+        dbs = {}
+        for i in range(1, self.num_layers):
+            dbs[i] = np.sum(deltas[i], axis = 0)
+
+        dws = {}
+        for i in range(1, self.num_layers):
+            dws[i] = np.dot(np.transpose(self.outputs[i-1]), deltas[i])
+            dws[i] += regularity * self.weights[i-1]
+
+        for i in range(self.num_layers-1):
+            self.weights[i] += -eps * dws[i+1]
+            self.biases[i] += -eps * dbs[i+1]
+
 
     def train_network(self, X, y):
         predicted = self.feedforward(X)
         self.backpropagate(X, y, predicted)
 
 
-train_data = gen.generate_graphs(200, 4, 90)
-test_data = gen.generate_graphs(100, 4, 90)
+data = [[0.1, 0.1, 0.1],
+        [0.5, 0.5, 0.5],
+        [0.5, 0.5, 0.5],
+        [1.0, 0.5, 0.5],
+        [1.0, 1.0, 0.5],
+        [1.0, 1.0, 1.0],
+        [1.0, 1.0, 1.0]]
+
+labels = [[0.2], [0.4], [0.38], [0.5], [0.6], [0.8], [0.82]]
+train_data = gen.generate_graphs(50, 3, 9)
+test_data = gen.generate_graphs(10, 3, 9)
 
 new_train_data = []
 new_train_labels = []
@@ -105,7 +118,13 @@ for i in test_data['y']:
 
 #model = train_model(new_train_data, new_train_labels, 2)
 
-neur = NN([3, 3, 1])
+neur = NN([3, 10, 12, 50, 2, 1])
 
-for i in range(2):
-    neur.train_network(new_train_data, new_train_labels)
+normalized_labels = np.divide(np.subtract(new_train_labels, 13),2)
+
+
+for i in range(1000):
+    neur.train_network(new_train_data, normalized_labels)
+
+print("Predicted: ", np.add(2*neur.predict(new_train_data), 13)[49],
+      "\nActual: ", new_train_labels[49])
