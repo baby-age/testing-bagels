@@ -88,16 +88,23 @@ class NN():
 
 
 data = [[0.1, 0.1, 0.1],
+        [0.1, 0.1, 0.1],
+        [0.1, 0.1, 0.1],
+        [0.4, 0.5, 0.5],
+        [0.5, 0.6, 0.5],
         [0.5, 0.5, 0.5],
         [0.5, 0.5, 0.5],
         [1.0, 0.5, 0.5],
         [1.0, 1.0, 0.5],
         [1.0, 1.0, 1.0],
+        [1.0, 1.0, 1.0],
+        [1.0, 1.0, 1.0],
         [1.0, 1.0, 1.0]]
 
-labels = [[0.2], [0.4], [0.38], [0.5], [0.6], [0.8], [0.82]]
-train_data = gen.generate_graphs(50, 3, 9)
-test_data = gen.generate_graphs(10, 3, 9)
+labels = [[0.2], [0.21], [0.2], [0.35], [0.41], [0.4], [0.38], [0.5], [0.6], [0.8], [0.82], [0.8], [0.8]]
+
+train_data = gen.generate_graphs(400, 40, 2)
+test_data = gen.generate_graphs(200, 40, 2)
 
 new_train_data = []
 new_train_labels = []
@@ -118,13 +125,20 @@ for i in test_data['y']:
 
 #model = train_model(new_train_data, new_train_labels, 2)
 
-neur = NN([3, 10, 12, 50, 2, 1])
+neur = NN([3, 20, 20, 1])
 
-normalized_labels = np.divide(np.subtract(new_train_labels, 13),2)
+mean = 11
+divisor = 8
+normalized_labels = np.divide(np.subtract(new_train_labels, mean), divisor)
 
 
-for i in range(1000):
+for i in range(200):
     neur.train_network(new_train_data, normalized_labels)
 
-print("Predicted: ", np.add(2*neur.predict(new_train_data), 13)[49],
-      "\nActual: ", new_train_labels[49])
+tr = np.add(divisor*neur.predict(new_test_data), mean)
+print("Predicted:\n", np.add(divisor*neur.predict(new_test_data), mean)[1:10],
+      "\nActual:\n", np.matrix(new_test_labels)[1:10],
+      "\nDiff:\n", np.subtract(tr, new_test_labels)[1:10],
+      "\nStandard deviation: ", np.std(a = np.subtract(tr, new_test_labels)),
+      "\nMean diff:\t    ", np.mean(a = np.subtract(tr, new_test_labels)),
+      "\nMean diff abs:\t    ", np.mean(a = abs(np.subtract(tr, new_test_labels))))
