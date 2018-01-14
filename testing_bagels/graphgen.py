@@ -21,11 +21,11 @@ def generate_graphs(number, dimension, max_weight):
 	for i in range(number):
 		ran = random.uniform(0, 1)
 		if ran < 0.33:
-			age = random.uniform(8,10)
+			age = random.normal(loc = 9, scale = 0.3)
 		elif ran < 0.66:
-			age = random.uniform(10,12)
+			age = random.normal(loc = 11, scale = 0.2)
 		else:
-			age = random.uniform(12,14)
+			age = random.normal(loc = 13, scale = 0.3)
 
 		data.append(generate_graph_with_age(dimension, ran, max_weight, age))
 	df = pand.DataFrame(data, columns = ['X', 'y'])

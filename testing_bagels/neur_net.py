@@ -55,8 +55,15 @@ class NN():
         self.outputs.append(vec)
         return(vec)
 
+    def calculate_simple_error(y, predicted):
+        return 0.5*(predicted-y)
+
+    def calculate_error_with_exponent(self, y, predicted, exponent):
+        return 0.5*np.sign(predicted-y)*np.power(predicted-y, exponent)
+
     def backpropagate(self, X, y, predicted):
-        self.error = 0.5*np.power(predicted-y, 1)
+
+        self.error = self.calculate_error_with_exponent(y, predicted, 2)
         self.delta = self.error * d_tanh(self.outputs[self.num_layers-1])
 
         deltas = {}
@@ -103,8 +110,8 @@ data = [[0.1, 0.1, 0.1],
 
 labels = [[0.2], [0.21], [0.2], [0.35], [0.41], [0.4], [0.38], [0.5], [0.6], [0.8], [0.82], [0.8], [0.8]]
 
-train_data = gen.generate_graphs(400, 40, 2)
-test_data = gen.generate_graphs(200, 40, 2)
+train_data = gen.generate_graphs(400, 20, 2)
+test_data = gen.generate_graphs(200, 20, 2)
 
 new_train_data = []
 new_train_labels = []
@@ -125,15 +132,18 @@ for i in test_data['y']:
 
 #model = train_model(new_train_data, new_train_labels, 2)
 
-neur = NN([3, 20, 20, 1])
+neur = NN([3, 5, 5, 1])
 
 mean = 11
 divisor = 8
 normalized_labels = np.divide(np.subtract(new_train_labels, mean), divisor)
 
+num_iterations = 1000
 
-for i in range(200):
-    neur.train_network(new_train_data, normalized_labels)
+for i in range(num_iterations):
+    lower_bound = np.random.randint(0, int(0.3*num_iterations))
+    upper_bound = np.random.randint(int(0.6*num_iterations), num_iterations)
+    neur.train_network(new_train_data[lower_bound:upper_bound], normalized_labels[lower_bound:upper_bound])
 
 tr = np.add(divisor*neur.predict(new_test_data), mean)
 print("Predicted:\n", np.add(divisor*neur.predict(new_test_data), mean)[1:10],
