@@ -2,9 +2,11 @@ import pandas as pand
 import numpy as np
 import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
+import testing_bagels.graphread as read
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
+import os
 
 def visualise(m, y):
     fig = plt.figure()
@@ -17,7 +19,9 @@ def visualise(m, y):
 
     plt.show()
 
-train_data = gen.generate_graphs(300, 60, 100)
+#train_data = read.read_data(os.getcwd() + '/Data/', 1)
+
+train_data = gen.generate_graphs(100, 60, 100)
 test_data = gen.generate_graphs(100, 60, 100)
 
 new_train_data = []
