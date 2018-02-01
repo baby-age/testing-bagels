@@ -25,8 +25,8 @@ pca.fit(new_train_data)
 explained_variances = pca.explained_variance_ratio_
 
 components = pca.components_
-print(sum(explained_variances))
-fst = components[1]
+print(sum(explained_variances[0:10]))
+fst = components[0]
 fst = fst.reshape((58, 58))
 imshow(fst, interpolation='nearest')
 plt.show()
