@@ -1,5 +1,5 @@
 import numpy as np
-import graphgen
+import testing_bagels.graphgen
 from numpy import linalg as ln
 
 def algebraic_connectivity(m1):
