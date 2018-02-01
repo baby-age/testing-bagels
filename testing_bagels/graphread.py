@@ -3,11 +3,6 @@ import pandas as pand
 import scipy.io
 import os
 
-def read_data(path, frequency_range):
-    files = sorted(os.listdir(path))    
-    data = []
-    for i in range(len(files)):
-        data.append(read_graph(path + files[i] + '/dbPLI/AS_A_dbpli.mat', frequency_range))
 
     df = pand.DataFrame(data, columns = ['X', 'y'])
     return(df)
