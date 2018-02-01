@@ -19,7 +19,9 @@ def visualise(m, y):
 
     plt.show()
 
-#train_data = read.read_data(os.getcwd() + '/Data/', 1)
+# This should be the path the the database containing all the files
+#path = ''
+#train_data = read.read_data(path, 'preterm', 'PPC', 'theta')
 
 train_data = gen.generate_graphs(100, 60, 100)
 test_data = gen.generate_graphs(100, 60, 100)
