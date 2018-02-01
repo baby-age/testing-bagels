@@ -8,7 +8,7 @@ def read_data(path, group, modality, frequency_range):
               'control': 'CONT', 'preterm': 'KEKE', 'PPC': 'dbPLI',
               'AAC': 'oCC', 'active sleep': 'AS_A_dbpli.mat', 'quiet sleep': 'TA_A_dbpli.mat'}
 
-    files = sorted(list(filter(lambda x: x.startswith(params['preterm']), os.listdir(path))))    
+    files = sorted(list(filter(lambda x: x.startswith(params['preterm']), os.listdir(path))))
     data = []
     for i in range(len(files)):
         data.append(read_graph(path + files[i] + '/' + params[modality] + '/' + params['active sleep'], params[frequency_range]))
