@@ -3,7 +3,6 @@ import numpy as np
 import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
 import testing_bagels.graphread as read
-import testing_bagels.matrix_preprocessor as preprocessor
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
@@ -20,14 +19,7 @@ def visualise(m, y):
 
     plt.show()
 
-
-wd = os.getcwd() + "/Data/"
-# This should be the path the the database containing all the files
-#path = ''
-#train_data = read.read_data(path, 'preterm', 'PPC', 'theta')
-#preprocessed_train_data = []
-#for i in train_data['X']:
-    #preprocessed_train_data.append(preprocessor.preprocess_matrix(i))
+#train_data = read.read_data(os.getcwd() + '/Data/', 1)
 
 train_data = gen.generate_graphs(100, 60, 100)
 test_data = gen.generate_graphs(100, 60, 100)

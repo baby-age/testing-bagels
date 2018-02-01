@@ -4,41 +4,29 @@ import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
 import testing_bagels.graphread as read
 import matplotlib.pyplot as plt
+from matplotlib import pylab
+from pylab import *
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn import linear_model
+from sklearn.decomposition import PCA
 import os
 
-def visualise(m, y):
-    fig = plt.figure()
-    ax = Axes3D(fig)
+wd = os.getcwd() + "/Data/"
 
-    ax.scatter(m[:,0],m[:,1],m[:,2], c = train_data['y'])
-    ax.set_xlabel('Ave. dist.')
-    ax.set_ylabel('Max. eig.gap')
-    ax.set_zlabel('Alg. connectivity')
+train_data = read.read_data(path = wd, group = 'preterm', modality = 'PPC', frequency_range = 'theta')
 
-    plt.show()
-
-#train_data = read.read_data(os.getcwd() + '/Data/', 1)
-
-train_data = gen.generate_graphs(100, 60, 100)
-test_data = gen.generate_graphs(100, 60, 100)
 
 new_train_data = []
-new_test_data = []
-
 for i in train_data['X']:
-    new_train_data.append(emb.embed(i))
+    new_train_data.append(i.flatten())
 
-for i in test_data['X']:
-    new_test_data.append(emb.embed(i))
+pca = PCA(n_components=400)
+pca.fit(new_train_data)
+explained_variances = pca.explained_variance_ratio_
 
-clf = linear_model.Lasso(alpha=0.1)
-
-clf.fit(new_train_data, train_data['y'])
-
-pred = clf.predict(new_test_data)
-
-print("Average error: ", sum(pred-test_data['y'])/len(test_data))
-
-visualise(np.matrix(new_train_data), train_data['y'])
+components = pca.components_
+print(sum(explained_variances))
+fst = components[1]
+fst = fst.reshape((58, 58))
+imshow(fst, interpolation='nearest')
+plt.show()
