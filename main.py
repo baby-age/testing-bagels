@@ -1,18 +1,19 @@
-import pandas as pand
+from matplotlib import pylab
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+import os
+import pandas as pand
+from pylab import *
+from sklearn import linear_model
+from sklearn.decomposition import PCA
+from sklearn.kernel_ridge import KernelRidge
+from sklearn.manifold import TSNE
 import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
 import testing_bagels.graphread as read
-import matplotlib.pyplot as plt
-import testing_bagels.visualiser as vis
-from matplotlib import pylab
-from pylab import *
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn import linear_model
-from sklearn.decomposition import PCA
-import os
 import testing_bagels.neur_net as neural
-from sklearn.kernel_ridge import KernelRidge
+import testing_bagels.visualiser as vis
 
 
 def flatten_data(data):
@@ -27,7 +28,6 @@ def flatten_data(data):
     df = pand.DataFrame(d)
     return(df)
 
-
 wd = os.getcwd() + "/Data/"
 
 train_data = read.read_data(path = wd, group = 'preterm', modality = 'PPC', frequency_range = 'theta')
@@ -41,14 +41,13 @@ pca = PCA(n_components=400)
 pca.fit(to_X)
 explained_variances = pca.explained_variance_ratio_
 
-clf = KernelRidge(alpha=1.0)
-clf.fit(to_X[1:10], to_y[1:10])
-print(clf.get_params)
-predicted = clf.predict(to_X[11:20])
-print(predicted)
-
 components = pca.components_
-print(sum(explained_variances[0:10]))
+print("The first 20 components explain ", sum(explained_variances[0:19]),
+    " percent of the variance.")
 
-
-vis.plot_PCs(components)
+X_embedded = TSNE(n_components=2).fit_transform(to_X)
+print(X_embedded)
+print(X_embedded[:,0])
+plt.scatter(X_embedded[:,0], X_embedded[:,1])
+plt.show()
+#vis.plot_PCs(components)

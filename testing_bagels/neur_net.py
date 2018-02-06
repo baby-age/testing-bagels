@@ -92,8 +92,3 @@ class NN():
     def train_network(self, X, y):
         predicted = self.feedforward(X)
         self.backpropagate(X, y, predicted)
-
-
-
-
-neur = NN([3364, 5, 1])
