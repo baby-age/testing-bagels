@@ -30,7 +30,11 @@ def flatten_data(data):
 
 wd = os.getcwd() + "/Data/"
 
-train_data = read.read_data(path = wd, group = 'preterm', modality = 'PPC', frequency_range = 'theta')
+# Put correct path!
+csv_path = os.getcwd() + "/Neuro_at_fullterm_age.csv"
+
+train_data = read.read_data(path = wd, group = 'preterm', modality = 'PPC',
+frequency_range = 'theta', csv_path = csv_path)
 
 new_train_data = flatten_data(train_data)
 
