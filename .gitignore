@@ -2,3 +2,5 @@ testing_bagels.egg-info/*
 testing_bagels/*.pyc
 testing_bagels/__pycache__/*
 Data*
+Neuro_at*
+.DS_*

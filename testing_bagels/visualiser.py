@@ -4,27 +4,42 @@ from pylab import *
 
 def plot_PCs(components):
     plt.figure(1)
-    fst = components[0]
-    fst = fst.reshape((58, 58))
-    sdn = components[1]
-    sdn = sdn.reshape((58, 58))
-    trd = components[2]
-    trd = trd.reshape((58,58))
+    for i in range(0, 4):
+        component = components[i].reshape((sqrt(len(components)),
+            sqrt(len(components))))
+        plotint = 220 + i
+        plt.subplot(plotint)
+        plt.imshow(component, interpolation="nearest")
+        plt.title(i + ". PC")
+    plt.show()
 
-    fourth = components[3]
-    fourth = fourth.reshape((58,58))
+def visualize_tsne(reduced_data, to_y):
+    colors = []
+    for y in to_y:
+        c = math.floor(1*(y+0))
+        colors.append(c)
 
-    plt.subplot(221)
-    plt.imshow(fst, interpolation="nearest")
-    plt.title("1. PC")
-    plt.subplot(222)
-    plt.imshow(sdn, interpolation="nearest")
-    plt.title("2. PC")
-    plt.subplot(223)
-    plt.imshow(trd, interpolation="nearest")
-    plt.title("3. PC")
-    plt.subplot(224)
-    plt.imshow(fourth, interpolation="nearest")
-    plt.title("4. PC")
+    fig = plt.figure()
+    ax1 = fig.add_subplot(221)
+    ax1.scatter(reduced_data[:,0], reduced_data[:,1], c=colors)
+
+
+    ax1.set_xlabel('1.')
+
+
+    ax2 = fig.add_subplot(222)
+    ax2.scatter(reduced_data[:,0], reduced_data[:,2], c=colors)
+
+
+    ax2.set_xlabel('2.')
+    ax2.set_ylabel('Y Label')
+
+
+    ax3 = fig.add_subplot(223)
+    ax3.scatter(reduced_data[:,1], X_embedded[:,2], c=colors)
+
+
+    ax3.set_xlabel('X Label')
+    ax3.set_ylabel('3.')
 
     plt.show()

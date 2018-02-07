@@ -1,57 +1,49 @@
-from matplotlib import pylab
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import os
-import pandas as pand
 from pylab import *
 from sklearn import linear_model
-from sklearn.decomposition import PCA
-from sklearn.kernel_ridge import KernelRidge
 from sklearn.manifold import TSNE
+from sklearn.manifold import LocallyLinearEmbedding
+from sklearn.svm import SVR
 import testing_bagels.embedder as emb
 import testing_bagels.graphgen as gen
 import testing_bagels.graphread as read
 import testing_bagels.neur_net as neural
 import testing_bagels.visualiser as vis
+import testing_bagels.dat_processor as dat_proc
+import testing_bagels.pca as pca
+import warnings
 
+warnings.filterwarnings(action="ignore", module="scipy", message="^internal gelsd")
 
-def flatten_data(data):
-    new_train_X = []
-    for i in train_data['X']:
-        new_train_X.append(i.flatten())
-    new_train_Y = []
-    for i in train_data['y']:
-        new_train_Y.append(i)
-
-    d = {'X': new_train_X, 'y':new_train_Y}
-    df = pand.DataFrame(d)
-    return(df)
 
 wd = os.getcwd() + "/Data/"
 
 # Put correct path!
 csv_path = os.getcwd() + "/Neuro_at_fullterm_age.csv"
 
-train_data = read.read_data(path = wd, group = 'preterm', modality = 'PPC',
-frequency_range = 'theta', csv_path = csv_path)
+data = read.read_data(path = wd, group = 'preterm', modality = 'PPC',
+    frequency_range = 'theta', csv_path = csv_path)
 
-new_train_data = flatten_data(train_data)
+X, y = dat_proc.listify(dat_proc.flatten_data(data))
 
-to_X = list(new_train_data['X'])
-to_y = list(new_train_data['y'])
+X_embedded = TSNE(n_components=3, perplexity=40.0,
+    method='exact', n_iter = 4000, init='random', n_iter_without_progress = 1000, learning_rate = 30, early_exaggeration=50, metric='hamming').fit_transform(X)
 
-pca = PCA(n_components=400)
-pca.fit(to_X)
-explained_variances = pca.explained_variance_ratio_
+train_data, train_label, test_data, test_label = dat_proc.to_train_test(X,
+    y, 20)
 
-components = pca.components_
-print("The first 20 components explain ", sum(explained_variances[0:19]),
-    " percent of the variance.")
 
-X_embedded = TSNE(n_components=2).fit_transform(to_X)
-print(X_embedded)
-print(X_embedded[:,0])
-plt.scatter(X_embedded[:,0], X_embedded[:,1])
-plt.show()
-#vis.plot_PCs(components)
+col = []
+for y in to_y:
+    c = math.floor(5*(y+1))
+    col.append(c)
+
+reg.fit(train_data, train_label)
+
+predicted = list(reg.predict(test_data))
+array_predicted = np.asarray(predicted)
+array_test_labels = np.asarray(test_label)
+
+print("Predicted:", array_predicted, "\n\nReal:", array_test_labels,
+    "\n\n\nDiff:", array_predicted-array_test_labels)
