@@ -36,10 +36,27 @@ def visualize_tsne(reduced_data, to_y):
 
 
     ax3 = fig.add_subplot(223)
-    ax3.scatter(reduced_data[:,1], X_embedded[:,2], c=colors)
+    ax3.scatter(reduced_data[:,1], reduced_data[:,2], c=colors)
 
 
     ax3.set_xlabel('X Label')
     ax3.set_ylabel('3.')
+
+    plt.show()
+
+def visualize_3d(reduced_data, y):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    colors = []
+    for y in y:
+        c = math.floor(1*(y+0))
+        colors.append(c)
+
+    ax.scatter(reduced_data[:,0], reduced_data[:,1], reduced_data[:,2], c=colors)
+
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
 
     plt.show()

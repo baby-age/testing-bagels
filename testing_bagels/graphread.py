@@ -6,16 +6,12 @@ import csv
 
 def read_neuro_scores(csv_path):
     neuro_scores = {}
-
     with open(csv_path) as csvfile:
         rdr = csv.reader(csvfile, delimiter=";")
-
         next(rdr)
         for row in rdr:
             baby_id, c1, c2 = row[0], float(row[2]), float(row[3])
             neuro_scores[baby_id] = (c1, c2)
-
-
     return neuro_scores
 
 def read_data(path, group, modality, frequency_range, csv_path):
