@@ -3,10 +3,16 @@ import numpy as np
 import math
 from numpy import array_split
 
+# Algorithm takes just the upper part of the triangle matrix
 def flatten_data(data):
     new_train_X = []
     for i in data['X']:
-        new_train_X.append(i.flatten())
+        flattened_matrix = []
+        for k in range(len(i)):
+            row = i[k][1+k:len(i)]
+            flattened_matrix = np.concatenate([flattened_matrix,row])
+            #new_train_X.append(i.flatten())
+        new_train_X.append(flattened_matrix)
     new_train_Y = []
     for i in data['y']:
         new_train_Y.append(i)
