@@ -1,8 +1,14 @@
 import numpy as np
 import os
 import scipy.io
+import pandas as pd
 
-
+def preprocess_whole_data(data):
+    preprocessed_data = pd.DataFrame()
+    preprocessed_data['X'] = [preprocess_matrix(x) for x in data['X']]
+    preprocessed_data['y'] = data['y']
+    return preprocessed_data
+    
 def preprocess_matrix(m1):
     m1 = abs(m1)
     m1 = get_symmetric_matrix(m1)
@@ -21,7 +27,7 @@ def correct_with_fidelity_operator(m1):
 
 def get_fidelity_operator():
     # Set path to the location of FidelityOperator_n58.mat on your computer
-    path = '/home/matleino/Desktop/tutkijalinja/Helsinki_SVM/FidelityOperator_n58.mat'
+    path = ''
     fidelity_operator_matrix = scipy.io.loadmat(path)['FidelityOperator']
     return fidelity_operator_matrix
 
