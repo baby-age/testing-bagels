@@ -1,11 +1,24 @@
 import numpy as np
 import testing_bagels.graphgen
 from numpy import linalg as ln
+import itertools
 
-def algebraic_connectivity(m1):
-    laplacian = calculate_laplacian_matrix(m1)
-    eigenvalues = ln.eig(laplacian)[0]
-    return(sorted(eigenvalues)[1])
+def algebraic_connectivities(m1):
+    data_list = list()
+    for vector in m1:
+        matrix = np.zeros((58,58))
+        acc = 0
+        for i in range(0, 58):
+            for j in range(i+1, 58):
+                matrix[i][j] = vector[acc]
+                matrix[j][i] = vector[acc]
+                acc = acc+1
+
+        lap = calculate_laplacian_matrix(matrix)
+        eigenvalues = ln.eig(lap)[0]
+        data_list.append(sorted(eigenvalues)[1])
+
+    return(data_list)
 
 def biggest_eigenvalue(m1):
     return(abs(calculate_eigenvalues(m1)[0]))
@@ -45,15 +58,14 @@ def eigenmode_volume(m1):
 
 def count_adjacents(vec):
     count = 0
+
     for i in vec:
-        if i != 0:
-            count = count+1
+        count = sum(i)
+
+
     return count
 
-def calculate_degree_matrix(m1):
-    dim = len(m1)
-    degree_matrix = np.diag([count_adjacents(y) for y in m1])
-    return(degree_matrix)
+
 
 def calculate_weighted_degree_matrix(m1):
     dim = len(m1)
@@ -67,16 +79,39 @@ def if_zero(x):
         return 1
 
 def calculate_adjacency_matrix(m1):
+    for row in m1:
+        for element in row:
+            print(element)
     adj_m = np.matrix([[if_zero(x) for x in m1[y]] for y in range(len(m1))])
     return(adj_m)
 
-def calculate_laplacian_matrix(m1):
-    d = calculate_degree_matrix(m1)
-    a = calculate_adjacency_matrix(m1)
+def calculate_degree_matrix(m1):
+    diagonal_degrees = []
+    for row in m1:
+        diagonal_degrees.append(np.sum(np.sum(row)))
+        print(np.sum(np.sum(row)))
+    degree_matrix = np.diag(np.diag(diagonal_degrees))
 
-    lap_mat = np.subtract(d, a)
+    return(degree_matrix)
+
+"""
+def calculate_laplacian_matrix(m1):
+
+    ds = calculate_degree_matrix(m1)
+    ads = calculate_adjacency_matrix(m1)
+    lap_mat = np.subtract(ds, ads)
 
     return(lap_mat)
+"""
+def calculate_laplacian_matrix(m1):
+    degree_matrix = np.zeros((58,58))
+    for i in range(0, len(m1)):
+        degree = sum(m1[i])
+        degree_matrix[i,i] = degree
+
+    laplacian_matrix = np.subtract(degree_matrix, m1)
+
+    return(laplacian_matrix)
 
 
 def normalised_laplacian_matrix(m1):
