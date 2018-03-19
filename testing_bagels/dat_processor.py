@@ -2,12 +2,14 @@ import pandas as pand
 import numpy as np
 import math
 from numpy import array_split
+import testing_bagels.matrix_preprocessor as mp
 
 # Algorithm takes just the upper part of the triangle matrix
 def flatten_data(data):
     new_train_X = []
     for i in data['X']:
         flattened_matrix = []
+        mp.preprocess_matrix(i)
         for k in range(len(i)):
             row = i[k][1+k:len(i)]
             flattened_matrix = np.concatenate([flattened_matrix,row])
@@ -38,12 +40,18 @@ def to_train_test(X, y, train_n):
 
     return train_data, train_label, test_data, test_label
 
-def from_regression_to_classify(y):
+def from_regression_to_classify(y, tresholds):
     for index, item in enumerate(y):
-        if item > 0:
-            y[index] = 1
-        else:
-            y[index] = -1
+        for i, tresh in enumerate(tresholds):
+            if item >= tresh[0] and item < tresh[1]:
+                y[index] = i
+                break
+    return y
+
+def to_absolute(y):
+    for index, item in enumerate(y):
+        y[index] = abs(item)
+
     return y
 
 def reduce_graph_regions(X, new_dim):

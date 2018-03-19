@@ -20,14 +20,41 @@ def algebraic_connectivities(m1):
 
     return(data_list)
 
+def algebraic_connectivity(m1):
+    lap = calculate_laplacian_matrix(m1)
+    eigenvalues = ln.eig(lap)[0]
+    return sorted(eigenvalues)[1]
+
+def from_triangular_to_matrix(vector):
+    matrix = np.zeros((58,58))
+
+    acc = 0
+    for i in range(0, 58):
+        for j in range(i+1, 58):
+            matrix[i][j] = vector[acc]
+            matrix[j][i] = vector[acc]
+            acc = acc+1
+    return(matrix)
+
+def from_matrix_to_triangular(vector):
+    flattened_matrix = []
+    for k in range(len(i)):
+        row = i[k][1+k:len(i)]
+        flattened_matrix = np.concatenate([flattened_matrix,row])
+    return(matrix)
+
 def biggest_eigenvalue(m1):
-    return(abs(calculate_eigenvalues(m1)[0]))
+    matrix = np.zeros((58,58))
+    return(abs(calculate_eigenvalues(matrix)[0]))
 
 def calculate_average_degree(m1):
     degrees = []
     for i in m1:
-        non_zero = np.count_nonzero(i)
-        degrees.append(non_zero)
+        deg = 0
+        for j in i:
+            if j > 0.2:
+                deg = deg + 1
+        degrees.append(deg)
     return(np.mean(degrees))
 
 def calculate_average_distances(m1):
@@ -122,6 +149,17 @@ def normalised_laplacian_matrix(m1):
     normalised_lap_mat = np.dot(d_minus, np.dot(lap_mat, d_minus))
     return(normalised_lap_mat)
 
+def avg_in_quarter(m1, quarter):
+    if quarter == 1:
+        s = np.mean(np.mean(m1[0:28, 0:28]))
+    elif quarter == 2:
+        s = np.mean(np.mean(m1[0:28, 29:58]))
+    elif quarter == 3:
+        s = np.mean(np.mean(m1[29:58, 0:28]))
+    else:
+        s = np.mean(np.mean(m1[29:58, 29:58]))
+    return s
+
 def smallest_eigenvalue(m1):
     return(abs(min(calculate_eigenvalues(m1))))
 
@@ -129,6 +167,5 @@ def average_eigenvalue(m1):
     return(np.mean(calculate_eigenvalues(m1)))
 
 def embed(m1):
-    vec = [calculate_average_distances(m1),
-     calculate_biggest_eigengap(m1), abs(algebraic_connectivity(m1))]
+    vec = algebraic_connectivities(m1)
     return(vec)

@@ -45,16 +45,18 @@ def visualize_tsne(reduced_data, to_y):
 
     plt.show()
 
-def visualize_3d(reduced_data, y):
+def visualize_3d(data, y):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    colors = []
-    for y in y:
-        c = math.floor(1*(y+0))
-        colors.append(c)
+    colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 1)]
+    cm = LinearSegmentedColormap.from_list("asd", colors, N=100)
 
-    ax.scatter(reduced_data[:,0], reduced_data[:,1], reduced_data[:,2], c=colors)
+    x1 = [x[0] for x in data]
+    x2 = [x[1] for x in data]
+    x3 = [x[2] for x in data]
+    ax.scatter(x1, x2, x3,cmap=cm, c = y)
+
 
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
@@ -62,11 +64,25 @@ def visualize_3d(reduced_data, y):
 
     plt.show()
 
+
+def visualize_2d(data, y):
+
+    colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 1)]
+    cm = LinearSegmentedColormap.from_list("asd", colors, N=100)
+    x1 = [x[0] for x in data]
+    x2 = [x[1] for x in data]
+    plt.scatter(x1, x2, cmap = cm, c = y)
+
+    plt.colorbar()
+    plt.show()
+
 def visualize_PCA(data, y):
     colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 1)]
     cm = LinearSegmentedColormap.from_list("asd", colors, N=100)
 
-    plt.scatter(data[:][0], data[:][1], cmap = cm, c = y)
+    x1 = [x[0] for x in data]
+    x2 = [x[1] for x in data]
+    plt.scatter(x1, x2, cmap = cm, c = y)
     plt.colorbar()
     plt.show()
     # plt.savefig("PCA.pdf")

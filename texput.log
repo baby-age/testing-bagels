@@ -1,0 +1,18 @@
+This is TeX, Version 3.14159265 (TeX Live 2017) (preloaded format=tex 2018.2.2)  8 MAR 2018 08:40
+**\def\Link#1.a.b.c.{\expandafter\def\csname tex4ht\endcsname{\expandafter\def\
+csname tex4ht\endcsname{#1,html}\input tex4ht.sty }}\def\HCode{\futurelet\HCode
+\HChar}\def\HChar{\ifx"\HCode\def\HCode"##1"{\Link##1}\expandafter\HCode\else\e
+xpandafter\Link\fi}\HCode .a.b.c.\input
+
+*quit
+! I can't find file `quit'.
+<*> quit
+        
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: 
+! Emergency stop.
+<*> quit
+        
+End of file on the terminal!
+
+No pages of output.

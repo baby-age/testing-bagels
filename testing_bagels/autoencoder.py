@@ -18,19 +18,20 @@ can decode arrays back to 58x58 graphs (in array form).
 Use decoder.predict(encoded_graphs).
 """
 def process_data(data, data_test):
-    encoding_dim = 32
+    encoding_dim = 16
     graph_dim = len(data[-1])
 
     input_graph = Input(shape=(graph_dim,))
-    
+
     encoded = Dense(1024, activation='relu')(input_graph)
     encoded = Dense(512, activation='relu')(encoded)
     encoded = Dense(256, activation='relu')(encoded)
     encoded = Dense(128, activation='relu')(encoded)
     encoded = Dense(64, activation='relu')(encoded)
     encoded = Dense(32, activation='relu')(encoded)
-
-    decoded = Dense(64, activation='relu')(encoded)
+    encoded = Dense(16, activation='relu')(encoded)
+    decoded = Dense(32, activation='relu')(encoded)
+    decoded = Dense(64, activation='relu')(decoded)
     decoded = Dense(128, activation='relu')(decoded)
     decoded = Dense(256, activation='relu')(decoded)
     decoded = Dense(512, activation='relu')(decoded)
@@ -42,13 +43,13 @@ def process_data(data, data_test):
     decoder_layer = autoencoder.layers[-1]
     decoder = Model(encoded_input, decoder_layer(encoded_input))
 
-    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+    autoencoder.compile(optimizer='adagrad', loss='binary_crossentropy')
 
     x_train = np.asarray(data)
     x_test = np.asarray(data_test)
 
     autoencoder.fit(x_train, x_train,
-                    epochs=5,
+                    epochs=300,
                     batch_size=256,
                     shuffle=True,
                     validation_data=(x_test, x_test))

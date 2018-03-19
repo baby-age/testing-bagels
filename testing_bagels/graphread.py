@@ -29,7 +29,7 @@ def read_data(path, group, modality, frequency_range, csv_path):
 
         try:
             # Change the last number to 1 to get the latter score
-            neuro_score = neuro_scores["'" +files[i]+ "'"][0]
+            neuro_score = neuro_scores["'" +files[i]+ "'"][1]
             data.append((graph, neuro_score))
         except KeyError:
             pass
