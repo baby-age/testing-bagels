@@ -27,10 +27,9 @@ def correct_with_fidelity_operator(m1):
 
 def get_fidelity_operator():
     # Set path to the location of FidelityOperator_n58.mat on your computer
-    path = ''
+    path = '/home/matleino/testing-bagels/FidelityOperator_n58.mat'
     fidelity_operator_matrix = scipy.io.loadmat(path)['FidelityOperator']
     return fidelity_operator_matrix
 
 def normalize_matrix(m1):
-    A = m1 / sum(sum(m1))
-    return A
+    return np.divide(m1, sum(sum(m1)))
