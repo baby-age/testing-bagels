@@ -17,13 +17,13 @@ def preprocess_matrix(m1):
     return m1
 
 def get_symmetric_matrix(m1):
-    A = np.maximum(m1, m1.transpose())
-    return A
+    return np.maximum(m1, m1.transpose())
+    #return m1
 
 def correct_with_fidelity_operator(m1):
     fidelity_operator = get_fidelity_operator()
-    A = np.dot(m1, fidelity_operator)
-    return A
+    return np.multiply(m1, fidelity_operator)
+    #return m1
 
 def get_fidelity_operator():
     # Set path to the location of FidelityOperator_n58.mat on your computer
@@ -33,3 +33,4 @@ def get_fidelity_operator():
 
 def normalize_matrix(m1):
     return np.divide(m1, sum(sum(m1)))
+    #return m1
