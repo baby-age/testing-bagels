@@ -22,12 +22,12 @@ def get_symmetric_matrix(m1):
 
 def correct_with_fidelity_operator(m1):
     fidelity_operator = get_fidelity_operator()
-    return np.multiply(m1, fidelity_operator)
-    #return m1
+    A = np.multiply(m1, fidelity_operator)
+    return A
 
 def get_fidelity_operator():
     # Set path to the location of FidelityOperator_n58.mat on your computer
-    path = '/home/matleino/testing-bagels/FidelityOperator_n58.mat'
+    path = ''
     fidelity_operator_matrix = scipy.io.loadmat(path)['FidelityOperator']
     return fidelity_operator_matrix
 

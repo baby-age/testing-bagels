@@ -11,7 +11,7 @@ def get_brain_areas(path):
     areas_dict = {'C': [], 'T': [], 'F': [], 'O': []}
 
     for i in range(len(areas)):
-        area_code = unicodedata.normalize('NFKD', areas[i][0][0]).encode('ascii', 'ignore')
+        area_code = areas[i][0][0]
         areas_dict[area_code].append(i + 1)
 
     return areas_dict

@@ -19,9 +19,10 @@ Maybe not the right place for this function
 '''
 def tune_SVR_params(X_train, y_train, X_test, y_test):
     tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
-                         'C': [1, 10, 100, 1000], 'epsilon': [1, 0.1, 0.01, 0.001]},
-                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000], 
-                        'epsilon': [1, 0.1, 0.01, 0.001]}]
+                         'C': [1, 10, 50, 100, 500, 1000, 5000, 10000, 20000, 30000, 40000, 50000], 
+                         'epsilon': [3, 2, 1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001]},
+                        {'kernel': ['linear'], 'C': [1, 10, 50, 100, 500, 1000, 5000, 10000, 20000, 30000, 40000, 50000], 
+                        'epsilon': [3, 2, 1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001]}]
 
     scores = ['neg_mean_absolute_error', 'explained_variance']
 
