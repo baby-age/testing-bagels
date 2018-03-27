@@ -9,12 +9,13 @@ def flatten_data(data):
     new_train_X = []
     for i in data['X']:
         flattened_matrix = []
-        mp.preprocess_matrix(i)
-        for k in range(len(i)):
-            row = i[k][1+k:len(i)]
+        matrix = mp.preprocess_matrix(i)
+        for k in range(len(matrix)):
+            row = matrix[k][1+k:len(matrix)]
             flattened_matrix = np.concatenate([flattened_matrix,row])
             #new_train_X.append(i.flatten())
         new_train_X.append(flattened_matrix)
+
     new_train_Y = []
     for i in data['y']:
         new_train_Y.append(i)

@@ -11,15 +11,22 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures, RobustScaler
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import BaggingRegressor
 from sklearn.kernel_approximation import RBFSampler
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
 from sklearn import preprocessing
 from sklearn.svm import LinearSVR
+from sklearn.svm import SVR
 import testing_bagels.embedder as emb
 import testing_bagels.feature_calculator as fc
 from sklearn.dummy import DummyClassifier
 from sklearn.dummy import DummyRegressor
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import RandomTreesEmbedding
 import sklearn.metrics as metrics
 #import testing_bagels.autoencoder as auto
 import testing_bagels.graphgen as gen
@@ -67,7 +74,7 @@ X3, y = dat_proc.listify(dat_proc.flatten_data(prep_data3))
 X4, y = dat_proc.listify(dat_proc.flatten_data(prep_data3))
 
 
-X1 = np.array([[ emb.algebraic_connectivity(emb.from_triangular_to_matrix(x))] for x in X1])
+X1 = np.array([[emb.algebraic_connectivity(emb.from_triangular_to_matrix(x))] for x in X1])
 
 
 X2 = np.array([[ emb.algebraic_connectivity(emb.from_triangular_to_matrix(x))] for x in X2])
@@ -93,21 +100,34 @@ Xs = np.column_stack((Xs1, Xs2, Xs3))
 X_df = prep_data1['X']
 y_df = prep_data1['y']
 
+#y = np.abs(y)
 #vis.visualize_3d(X, y)
 
-res = fc.modularity_and_efficiency(X_df)
+#res = fc.modularity_and_efficiency(X_df)
 
-modes1 = [list(x) for x in zip(res[0], res[1])]
+#modes1 = [list(x) for x in zip(res[0], res[1])]
 
-X_embedded = manifold.SpectralEmbedding(n_components=3).fit_transform(Xs1)
-X_embedded = np.column_stack((X_embedded, X1, X2, X3, X4))
+#X_embedded = manifold.SpectralEmbedding(n_components=4).fit_transform(Xs1)
+
+#X_embedded = np.column_stack((X_embedded, X1))
 
 #vis.visualize_3d(X_embedded, y)
 
+"""
 tpoptimizer = make_pipeline(
-    RBFSampler(gamma=0.25, n_components=100),
-    GradientBoostingRegressor(learning_rate=0.01, max_depth=4, min_samples_split=2, subsample=0.5, n_estimators=1000, verbose=0)
+    RBFSampler(gamma=0.25),
+    GradientBoostingRegressor(learning_rate=0.1, max_depth=4, min_samples_split=2, subsample=0.8, n_estimators=30, loss="huber", verbose=0, alpha=0.3)
 )
+"""
+"""
+tpoptimizer = make_pipeline(
+    RBFSampler(gamma=0.25),
+    RandomForestRegressor(max_depth=10, n_estimators=80, verbose=0, criterion="mae")
+)
+"""
+
+
+"""
 clf1 = DummyRegressor(strategy='mean')
 clf2 = DummyRegressor(strategy='median')
 
@@ -126,6 +146,7 @@ for value in range(0, 100):
     total_our = total_our + metrics.mean_squared_error(tpoptimizer.predict(np.array(test_data)), test_label)
 
 
+
     total_dummy1 = total_dummy1 + metrics.mean_squared_error(clf1.predict(np.array(test_data)), test_label)
     total_dummy2 = total_dummy2 + metrics.mean_squared_error(clf2.predict(np.array(test_data)), test_label)
     times = times+1
@@ -134,14 +155,17 @@ print("Our:", total_our/times)
 print("Dummy mean: ", total_dummy1/times)
 print("Dummy median: ", total_dummy2/times)
 
+"""
 
-#tpoptimizer = TPOTClassifier(generations = 200, population_size = 20, verbosity =2, cv=4, config_dict=None)
+train_data, train_label, test_data, test_label = dat_proc.to_train_test(X_embedded,
+    y, 28)
+
+tpoptimizer = TPOTRegressor(generations = 200, population_size = 5, verbosity =2, cv=4, config_dict=None)
 
 
 
 
-#tpoptimizer.fit(np.array(train_data), np.array(train_label))
-
+tpoptimizer.fit(np.array(train_data), np.array(train_label))
 #print(tpoptimizer.score(np.array(test_data), np.array(test_label)))
 print("Predicted: ", tpoptimizer.predict(np.array(test_data)))
 print("Real:", test_label)

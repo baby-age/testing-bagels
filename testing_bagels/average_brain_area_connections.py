@@ -68,7 +68,7 @@ def get_matrix_connections(matrix, areas_dict):
 """
 This is the main function of this class.
 Parameter data should be the output of read_data-function from graphread.py-class
-Parameter path_to_MyAtlas_n58 should be the path to the file MyAtlas_n58.mat for example 
+Parameter path_to_MyAtlas_n58 should be the path to the file MyAtlas_n58.mat for example
 '/home/matleino/tutkijalinja/show_brain areas/MyAtlas_n58.mat'
 Output is a pandas-dataframe with dimensions 33x10 where each row is for one graph and each column is the average of connections
 in one area of the brain or average connections between two brain areas.
@@ -81,7 +81,7 @@ def get_mean_strength_of_connections(data, path_to_MyAtlas_n58):
         matrix = data['X'][i]
         connections.append(get_matrix_connections(matrix, areas_dict))
 
-    df = pand.DataFrame(connections, columns = ['Frontal_connections', 'Central_connections', "Occipital_connections", "Temporal_connections", 
+    df = pand.DataFrame(connections, columns = ['Frontal_connections', 'Central_connections', "Occipital_connections", "Temporal_connections",
                                         "FC_connections", "FO_connections", "FT_connections", "CO_connections", "CT_connections", "OT_connections"])
-    
+
     return df
