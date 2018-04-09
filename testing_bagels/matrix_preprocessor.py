@@ -27,7 +27,7 @@ def correct_with_fidelity_operator(m1):
 
 def get_fidelity_operator():
     # Set path to the location of FidelityOperator_n58.mat on your computer
-    path = ''
+    path = '/home/local/tuletule/Documents/opiskelu/vauvaika/Helsinki_SVM/FidelityOperator_n58.mat'
     fidelity_operator_matrix = scipy.io.loadmat(path)['FidelityOperator']
     return fidelity_operator_matrix
 

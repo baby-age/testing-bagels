@@ -71,3 +71,13 @@ def visualize_PCA(data, y):
     plt.show()
     # plt.savefig("PCA.pdf")
     # plt.close()
+
+def visualize_2d(data, y):
+    colors = [(0, 1, 0), (0, 0.5, 0.5), (0, 0, 1)]
+    cm = LinearSegmentedColormap.from_list("asd", colors, N=100)
+
+    plt.scatter(data[:,0], data[:,1], cmap = cm, c = y)
+    plt.colorbar()
+    plt.show()
+    # plt.savefig("PCA.pdf")
+    # plt.close()

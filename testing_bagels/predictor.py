@@ -12,25 +12,27 @@ def build_model(X, y):
 def predict_and_score(X_train, y_train, X_test, y_test, model = LinearRegression()):
     model.fit(X_train, y_train)
     predictions = model.predict(X_test)
-    return predictions, metrics.mean_squared_error(y_test, predictions)
+    return predictions, metrics.accuracy_score(y_test, predictions)
 
 '''
 Maybe not the right place for this function
 '''
-def tune_SVR_params(X_train, y_train, X_test, y_test):
+def tune_SVR_params(X_train, y_train, X_test, y_test, model = SVR()):
     tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
                          'C': [1, 10, 50, 100, 500, 1000, 5000, 10000, 20000, 30000, 40000, 50000], 
                          'epsilon': [3, 2, 1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001]},
                         {'kernel': ['linear'], 'C': [1, 10, 50, 100, 500, 1000, 5000, 10000, 20000, 30000, 40000, 50000], 
                         'epsilon': [3, 2, 1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001]}]
 
-    scores = ['neg_mean_absolute_error', 'explained_variance']
+    tuned_parameters2 = []
+
+    scores = ['neg_mean_absolute_error']
 
     for score in scores:
         print("# Tuning hyper-parameters for %s" % score)
         print()
 
-        svr = GridSearchCV(SVR(), tuned_parameters, cv = 15, scoring = score)
+        svr = GridSearchCV(model, tuned_parameters, cv = 15, scoring = score)
         svr.fit(X_train, y_train)
 
         print("Best parameters set found on development set:")
