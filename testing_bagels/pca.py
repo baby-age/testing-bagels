@@ -11,7 +11,10 @@ def build_pca(data):
     return explained_variances, components
 
 def pca_transform(data):
-	pca = PCA(n_components=2)
-	transformed = pd.DataFrame(pca.fit_transform(data))
+    pca = PCA(n_components=2)
+    pca.fit(data)
+    transformed = pca.fit_transform(data)
+    components = pca.components_
+    print(pca.explained_variance_)
 
-	return transformed
+    return transformed, components

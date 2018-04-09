@@ -18,17 +18,27 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Lasso
+from sklearn.model_selection import StratifiedKFold
+from sklearn.feature_selection import f_regression
+from sklearn.feature_selection import mutual_info_regression
+from sklearn.feature_selection import SelectKBest
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.kernel_ridge import KernelRidge
 from sklearn import preprocessing
 from sklearn.svm import LinearSVR
 from sklearn.svm import SVR
+from sklearn.feature_selection import RFECV
 import testing_bagels.embedder as emb
 import testing_bagels.feature_calculator as fc
 from sklearn.dummy import DummyClassifier
 from sklearn.dummy import DummyRegressor
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import RandomTreesEmbedding
+from sklearn.feature_selection import VarianceThreshold
 import sklearn.metrics as metrics
-#import testing_bagels.autoencoder as auto
+import testing_bagels.autoencoder as auto
 import testing_bagels.graphgen as gen
 import testing_bagels.graphread as read
 import testing_bagels.neur_net as neural
@@ -157,10 +167,45 @@ print("Dummy median: ", total_dummy2/times)
 
 """
 
-train_data, train_label, test_data, test_label = dat_proc.to_train_test(X_embedded,
+def column(matrix, i):
+    return [row[i] for row in matrix]
+
+#Xs1, components = pca.pca_transform(Xs1)
+
+sel = SelectKBest(f_regression, k=4)
+
+
+
+
+#train_data = sel.fit_transform(train_data, train_label)
+#print(sel.get_support(indices=True))
+
+#idxs_selected = sel.get_support(indices=True)
+#idxs_selected = range(50,200)
+idxs_selected = [616, 120, 855, 856, 1057,1143, 168, 156]
+Xs1 = column(Xs1, idxs_selected)
+train_data, train_label, test_data, test_label = dat_proc.to_train_test(Xs1,
     y, 28)
 
-tpoptimizer = TPOTRegressor(generations = 200, population_size = 5, verbosity =2, cv=4, config_dict=None)
+#idxs_selected = [9, 120, 156, 168, 171, 616, 855, 856, 1057, 1143]
+#test_data = sel.transform(test_data)
+
+
+
+scaler = preprocessing.StandardScaler().fit(Xs1)
+train_data = scaler.fit_transform(train_data)
+test_data = scaler.fit_transform(test_data)
+Xs1 = scaler.fit_transform(Xs1)
+
+Xs1, components = pca.pca_transform(Xs1)
+vis.visualize_2d(Xs1, y)
+
+
+tpoptimizer = linear_model.BayesianRidge()
+
+#tpoptimizer = KernelRidge(alpha=1, degree=3).fit(train_data, train_label)
+
+#tpoptimizer = TPOTRegressor(generations = 100, population_size = 10, verbosity =2, cv=4, config_dict="TPOT light")
 
 
 
@@ -169,6 +214,7 @@ tpoptimizer.fit(np.array(train_data), np.array(train_label))
 #print(tpoptimizer.score(np.array(test_data), np.array(test_label)))
 print("Predicted: ", tpoptimizer.predict(np.array(test_data)))
 print("Real:", test_label)
+print("MSE:", metrics.mean_squared_error(y_pred=tpoptimizer.predict(np.array(test_data)), y_true=test_label))
 #tpoptimizer.export('tpot_exported_pipeline.py')
 
 #exported_pipeline = make_pipeline(
