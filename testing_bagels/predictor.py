@@ -12,7 +12,7 @@ def build_model(X, y):
 def predict_and_score(X_train, y_train, X_test, y_test, model = LinearRegression()):
     model.fit(X_train, y_train)
     predictions = model.predict(X_test)
-    return predictions, metrics.accuracy_score(y_test, predictions)
+    return predictions, metrics.mean_absolute_error(y_test, predictions)
 
 '''
 Maybe not the right place for this function
