@@ -11,7 +11,7 @@ def flatten_data(data):
         for k in range(len(i)):
             row = i[k][1+k:len(i)]
             flattened_matrix = np.concatenate([flattened_matrix,row])
-            #new_train_X.append(i.flatten())
+
         new_train_X.append(flattened_matrix)
     new_train_Y = []
     for i in data['y']:

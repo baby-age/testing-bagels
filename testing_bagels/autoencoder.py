@@ -12,10 +12,11 @@ def save_model(model, name = 'bagel-autoencoder'):
 """
 
 """
+You need to install keras (https://keras.io/) before using this function. 
 Input for example 90 % of graphs for training and 10 % of graphs for testing.
 Outputs tuple with encoded graphs as a list of 32-arrays and decoder which
 can decode arrays back to 58x58 graphs (in array form).
-Use decoder.predict(encoded_graphs).
+Use decoder.predict(encoded_graphs) to decode them.
 """
 def process_data(data, data_test):
     encoding_dim = 32
